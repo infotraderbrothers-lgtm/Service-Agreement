@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trader Brothers - Professional Joinery Services</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Include jsPDF library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -247,8 +249,7 @@
                     <p>Your agreement has been successfully submitted. We look forward to working with you.</p>
                     <p>A copy of the signed agreement is now available for download.</p>
                     <div class="navigation" style="margin-top: 30px;">
-                        <button class="btn btn-secondary" onclick="downloadAgreement()">📄 Download Agreement</button>
-                        <button class="btn btn-primary" onclick="startOver()">Start New Agreement</button>
+                        <button class="btn btn-secondary" onclick="downloadAgreement()">📄 Download PDF Agreement</button>
                     </div>
                 </div>
             </div>
