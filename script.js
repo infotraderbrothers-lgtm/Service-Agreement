@@ -2,16 +2,22 @@
 function initializePage() {
     const urlParams = new URLSearchParams(window.location.search);
     
+    // Decode URL parameters to handle spaces and special characters
     document.getElementById('client-company').textContent = 
-        urlParams.get('company') || '[CLIENT_COMPANY]';
+        decodeURIComponent(urlParams.get('company') || '[CLIENT_COMPANY]');
     document.getElementById('client-address').textContent = 
-        urlParams.get('address') || '[CLIENT_ADDRESS]';
+        decodeURIComponent(urlParams.get('address') || '[CLIENT_ADDRESS]');
     document.getElementById('client-email').textContent = 
-        urlParams.get('email') || '[CLIENT_EMAIL]';
+        decodeURIComponent(urlParams.get('email') || '[CLIENT_EMAIL]');
     document.getElementById('client-phone').textContent = 
-        urlParams.get('phone') || '[CLIENT_PHONE]';
+        decodeURIComponent(urlParams.get('phone') || '[CLIENT_PHONE]');
     document.getElementById('client-contact').textContent = 
-        urlParams.get('contact') || '[CLIENT_CONTACT]';
+        decodeURIComponent(urlParams.get('contact') || '[CLIENT_CONTACT]');
+    
+    // Pre-populate the client name field if contact parameter is provided
+    if (urlParams.get('contact')) {
+        document.getElementById('client-name').value = decodeURIComponent(urlParams.get('contact'));
+    }
     
     document.getElementById('agreement-date').value = new Date().toISOString().split('T')[0];
 }
@@ -242,21 +248,31 @@ This agreement is legally binding upon digital signature.
     `;
 }
 
+// Enhanced submit function with better error handling and client tracking
 async function submitAgreement() {
     const name = document.getElementById('client-name').value;
     const date = document.getElementById('agreement-date').value;
     const signatureData = canvas.toDataURL(); // Get signature as base64 image
     const fullContract = generateFullContract();
     
+    // Get URL parameters for client tracking
+    const urlParams = new URLSearchParams(window.location.search);
+    
     // Create agreement data object for webhook
     const webhookData = {
         clientName: name,
+        clientCompany: document.getElementById('client-company').textContent,
+        clientEmail: document.getElementById('client-email').textContent,
+        clientPhone: document.getElementById('client-phone').textContent,
+        clientAddress: document.getElementById('client-address').textContent,
         signedDate: date,
         submissionTimestamp: new Date().toISOString(),
         signedContract: fullContract,
         signature: signatureData,
         agreementType: 'Standard Terms & Conditions of Supply',
-        status: 'Signed and Submitted'
+        status: 'Signed and Submitted',
+        sourceUrl: window.location.href,
+        userAgent: navigator.userAgent
     };
     
     try {
